@@ -1,0 +1,9 @@
+
+
+targetDirectory=/Users/nikikorn/Desktop/source
+
+backupDirectory=/Users/nikikorn/Desktop/source/backup
+
+includeDirectory=false
+
+backupCicleSize= 3 
