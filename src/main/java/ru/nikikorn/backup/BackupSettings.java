@@ -1,70 +1,49 @@
 package ru.nikikorn.backup;
 
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class BackupSettings {
-    private static String targetDirectory;
-    private static String backupDirectory;
-    private static boolean includeDirectory;
-    private static Integer backupCicleSize;
 
-    public void start() throws IOException {
+    private String targetDirectory;
+    private String backupDirectory;
+    private boolean includeDirectory;
+    private Integer backupCicleSize;
+
+
+    public BackupSettings() {
+        String jar = Path.of(BackupServiceApplication.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent().normalize() + "/";
         Properties properties = new Properties();
-        try (
-                FileInputStream inputStream = new FileInputStream("Config.txt")) {
+        try (FileInputStream inputStream = new FileInputStream("Config.txt")) {
             properties.load(inputStream);
-        } catch (
-                FileNotFoundException e) {
-            System.out.println("Configuration file was not found - the default settings was applied.");
-            targetDirectory = "/Users/nikikorn/IdeaProjects/Backup-service/";
-            backupDirectory = "/Users/nikikorn/IdeaProjects/Backup-service/backup/";
-            includeDirectory = false;
-            backupCicleSize = 3;
+        } catch (IOException e) {
+            System.out.println("Configuration file was not read - the default settings was applied.");
         }
 
-        try {
-            targetDirectory = properties.getProperty("targetDirectory");
-            backupDirectory = properties.getProperty("backupDirectory");
-            includeDirectory = Boolean.parseBoolean(properties.getProperty("includeDirectory"));
-            backupCicleSize = Integer.valueOf(properties.getProperty("backupCicleSize").trim());
-        } catch (NumberFormatException e) {
-            System.out.println("Incorrect data format in backupCicleSize. Deafult setting was set.");
-            backupCicleSize = 3;
-        }
+        targetDirectory = properties.getProperty("targetDirectory", jar);
+        backupDirectory = properties.getProperty("backupDirectory", jar + "backup/");
+        includeDirectory = Boolean.parseBoolean(properties.getProperty("includeDirectory", "false"));
+        backupCicleSize = Integer.valueOf(properties.getProperty("backupCicleSize", "3").trim());
     }
 
-    public static String getTargetDirectory() {
+    public String getTargetDirectory() {
         return targetDirectory;
     }
 
-    public static void setTargetDirectory(String targetDirectory) {
-        BackupSettings.targetDirectory = targetDirectory;
-    }
-
-    public static String getBackupDirectory() {
+    public String getBackupDirectory() {
         return backupDirectory;
     }
 
-    public static void setBackupDirectory(String backupDirectory) {
-        BackupSettings.backupDirectory = backupDirectory;
-    }
-
-    public static boolean isIncludeDirectory() {
+    public boolean getIncludeDirectory() {
         return includeDirectory;
     }
 
-    public static void setIncludeDirectory(boolean includeDirectory) {
-        BackupSettings.includeDirectory = includeDirectory;
-    }
-
-    public static Integer getBackupCicleSize() {
+    public Integer getBackupCicleSize() {
         return backupCicleSize;
-    }
-
-    public static void setBackupCicleSize(Integer backupCicleSize) {
-        BackupSettings.backupCicleSize = backupCicleSize;
     }
 }

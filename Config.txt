@@ -4,6 +4,6 @@ targetDirectory=/Users/nikikorn/Desktop/source
 
 backupDirectory=/Users/nikikorn/Desktop/source/backup
 
-includeDirectory=false
+includeDirectory=true
 
 backupCicleSize= 3 
