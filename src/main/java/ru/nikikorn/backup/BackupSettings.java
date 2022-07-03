@@ -14,9 +14,10 @@ public class BackupSettings {
     private String backupDirectory;
     private boolean includeDirectory;
     private Integer backupCicleSize;
-    private String  jar = Path.of(BackupServiceApplication.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent().normalize() +"/";
 
-    public BackupSettings () {
+
+    public BackupSettings() {
+        String jar = Path.of(BackupServiceApplication.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent().normalize() + "/";
         Properties properties = new Properties();
         try (FileInputStream inputStream = new FileInputStream("Config.txt")) {
             properties.load(inputStream);
@@ -25,7 +26,7 @@ public class BackupSettings {
         }
 
         targetDirectory = properties.getProperty("targetDirectory", jar);
-        backupDirectory = properties.getProperty("backupDirectory", jar +"backup/");
+        backupDirectory = properties.getProperty("backupDirectory", jar + "backup/");
         includeDirectory = Boolean.parseBoolean(properties.getProperty("includeDirectory", "false"));
         backupCicleSize = Integer.valueOf(properties.getProperty("backupCicleSize", "3").trim());
     }
