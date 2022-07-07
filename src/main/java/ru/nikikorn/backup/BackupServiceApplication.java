@@ -13,8 +13,12 @@ import java.util.Properties;
 
 public class BackupServiceApplication {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         BackupSettings backupSettings = new BackupSettings();
+
+        new BackupCopying().copy();
+
+
 
 
 

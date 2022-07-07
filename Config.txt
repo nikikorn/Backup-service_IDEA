@@ -2,7 +2,7 @@
 
 targetDirectory=/Users/nikikorn/Desktop/source
 
-backupDirectory=/Users/nikikorn/Desktop/source/backup
+backupDirectory=/Users/nikikorn/Desktop/target/backup
 
 includeDirectory=true
 
