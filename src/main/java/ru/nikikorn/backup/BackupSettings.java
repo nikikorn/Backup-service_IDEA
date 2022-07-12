@@ -8,11 +8,10 @@ import java.util.Properties;
 
 public class BackupSettings {
 
-    private String targetDirectory;
-    private String backupDirectory;
-    private boolean includeDirectory;
-    private Integer backupCicleSize;
-
+    private final String targetDirectory;
+    private final String backupDirectory;
+    private final boolean includeDirectory;
+    private final Integer backupCycleSize;
 
     public BackupSettings() {
         String jar = Path.of(BackupServiceApplication.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent().normalize() + "/";
@@ -22,11 +21,10 @@ public class BackupSettings {
         } catch (IOException e) {
             System.out.println("Configuration file was not read - the default settings was applied.");
         }
-
         targetDirectory = properties.getProperty("targetDirectory", jar);
         backupDirectory = properties.getProperty("backupDirectory", jar + "backup/");
         includeDirectory = Boolean.parseBoolean(properties.getProperty("includeDirectory", "false"));
-        backupCicleSize = Integer.valueOf(properties.getProperty("backupCicleSize", "3").trim());
+        backupCycleSize = Integer.valueOf(properties.getProperty("backupCycleSize", "3").trim());
     }
 
     public Path getTargetDirectory() {
@@ -41,7 +39,7 @@ public class BackupSettings {
         return includeDirectory;
     }
 
-    public Integer getBackupCicleSize() {
-        return backupCicleSize;
+    public Integer getBackupCycleSize() {
+        return backupCycleSize;
     }
 }
