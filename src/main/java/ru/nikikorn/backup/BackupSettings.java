@@ -2,10 +2,8 @@ package ru.nikikorn.backup;
 
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 
 public class BackupSettings {
@@ -31,15 +29,15 @@ public class BackupSettings {
         backupCicleSize = Integer.valueOf(properties.getProperty("backupCicleSize", "3").trim());
     }
 
-    public String getTargetDirectory() {
-        return targetDirectory;
+    public Path getTargetDirectory() {
+        return Path.of(targetDirectory);
     }
 
-    public String getBackupDirectory() {
-        return backupDirectory;
+    public Path getBackupDirectory() {
+        return Path.of(backupDirectory);
     }
 
-    public boolean getIncludeDirectory() {
+    public boolean isIncludeDirectory() {
         return includeDirectory;
     }
 
