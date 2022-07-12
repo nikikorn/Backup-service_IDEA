@@ -29,12 +29,12 @@ public class BackupSettings {
         backupCicleSize = Integer.valueOf(properties.getProperty("backupCicleSize", "3").trim());
     }
 
-    public String getTargetDirectory() {
-        return targetDirectory;
+    public Path getTargetDirectory() {
+        return Path.of(targetDirectory);
     }
 
-    public String getBackupDirectory() {
-        return backupDirectory;
+    public Path getBackupDirectory() {
+        return Path.of(backupDirectory);
     }
 
     public boolean isIncludeDirectory() {
