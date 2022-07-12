@@ -2,10 +2,8 @@ package ru.nikikorn.backup;
 
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 
 public class BackupSettings {
@@ -39,7 +37,7 @@ public class BackupSettings {
         return backupDirectory;
     }
 
-    public boolean getIncludeDirectory() {
+    public boolean isIncludeDirectory() {
         return includeDirectory;
     }
 
