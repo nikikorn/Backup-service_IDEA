@@ -4,17 +4,12 @@ import java.io.IOException;
 
 public class BackupServiceApplication {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         BackupSettings backupSettings = new BackupSettings();
-
-
-        Backup.start(backupSettings);
-
-
-
-
-
-
-
+        try {
+            Backup.start(backupSettings);
+        } catch (IOException e) {
+            System.out.println("Error appeared."+ e.getMessage());
+        }
     }
 }

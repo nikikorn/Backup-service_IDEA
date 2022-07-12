@@ -6,4 +6,4 @@ backupDirectory=/Users/nikikorn/Desktop/target/backup
 
 includeDirectory=true
 
-backupCicleSize= 3 
+backupCycleSize= 3
