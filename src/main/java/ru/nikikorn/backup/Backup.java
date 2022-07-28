@@ -3,9 +3,12 @@ package ru.nikikorn.backup;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Backup {
 
@@ -23,9 +26,11 @@ public class Backup {
         }
         Path source = settings.getTargetDirectory();
         Path destination = Path.of(settings.getBackupDirectory() + "/" + date);
-        Files.createDirectory(destination); //TODO добавить логику если дир существует
-
+        if (!destination.toFile().exists()) {
+            Files.createDirectory(destination);
+        }
         Backup.copy(source, destination, settings.isIncludeDirectory());
+        deleteOldestDirectories(settings.getBackupDirectory().toFile(), settings.getBackupCycleSize());
     }
 
     private static void copy(Path source, Path backupDestination, boolean isIncludeDirectory) throws IOException {
@@ -38,12 +43,37 @@ public class Backup {
                 Files.copy(file.toPath(), Paths.get(backupDestination + "/" + file.toPath().getFileName()), StandardCopyOption.REPLACE_EXISTING);
             } else if (file.isDirectory() && isIncludeDirectory) {
                 Path temp = Paths.get(backupDestination + "/" + file.toPath().getFileName());
-                Files.createDirectory(temp);
-                copy(file.toPath(),temp, isIncludeDirectory);
+                if (!temp.toFile().exists()) {
+                    Files.createDirectory(temp);
+                }
+                copy(file.toPath(), temp, isIncludeDirectory);
+            }
+        }
+    }
+
+
+
+    private static void deleteOldestDirectories(File file, int cycleSize) throws IOException {
+        List<File> toDelete = new ArrayList<>(Arrays.asList(file.listFiles()).stream().filter(f -> !f.isHidden()).toList());
+        if (file.isDirectory()) {
+            List<File> listFiles = Arrays.asList(file.listFiles()).stream()
+                    .filter(File::isDirectory)
+                    .sorted((f1, f2) -> Long.compare(f2.lastModified(), f1.lastModified()))
+                    .limit(cycleSize)
+                    .toList();
+            toDelete.removeAll(listFiles);
+            List<Path> toDeletePath = toDelete.stream().filter(File::isDirectory).map(File::toPath).toList();
+            for (Path path : toDeletePath) {
+                try (Stream<Path> temp = Files.walk(path)) {
+                    temp.sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            .forEach(File::delete);
+                }
             }
         }
     }
 }
+
 
 
 
