@@ -26,13 +26,13 @@ public class Backup {
         }
         Path source = settings.getTargetDirectory();
         Path destination = Path.of(settings.getBackupDirectory() + "/" + date);
-        try {
+        if(!destination.toFile().exists()) {
             Files.createDirectory(destination);
-        } catch (FileAlreadyExistsException e) {
+            Backup.copy(source, destination, settings.isIncludeDirectory());
+        } else {
             Backup.copy(source, destination, settings.isIncludeDirectory());
         }
-        Backup.copy(source, destination, settings.isIncludeDirectory());
-        deleteOldestDirectories(settings.getBackupDirectory().toFile());
+        deleteOldestDirectories(settings.getBackupDirectory().toFile(),settings.getBackupCycleSize());
     }
 
     private static void copy(Path source, Path backupDestination, boolean isIncludeDirectory) throws IOException {
@@ -45,20 +45,20 @@ public class Backup {
                 Files.copy(file.toPath(), Paths.get(backupDestination + "/" + file.toPath().getFileName()), StandardCopyOption.REPLACE_EXISTING);
             } else if (file.isDirectory() && isIncludeDirectory) {
                 Path temp = Paths.get(backupDestination + "/" + file.toPath().getFileName());
-                try {
+                if(!temp.toFile().exists()) {
                     Files.createDirectory(temp);
-                } catch (FileAlreadyExistsException e) {
+                    copy(file.toPath(), temp, isIncludeDirectory);
+                } else {
                     copy(file.toPath(), temp, isIncludeDirectory);
                 }
-                copy(file.toPath(), temp, isIncludeDirectory);
             }
         }
     }
 
-    private static void deleteOldestDirectories(File file) throws IOException {
-        List<File> toDelete = new ArrayList<>(Arrays.stream(file.listFiles()).toList());
+    private static void deleteOldestDirectories(File file, int cycleSize) throws IOException {
+        List<File> toDelete = Arrays.asList(file.listFiles());
         toDelete.stream().filter(File::isHidden).collect(Collectors.toList());
-        if (file.isDirectory() && toDelete.size() > 4) {
+        if (file.isDirectory() && cycleSize +1 > 4) {
             List<File> listFiles = Arrays.stream(file.listFiles()).toList().stream()
                     .filter(File::isDirectory)
                     .sorted((f1, f2) -> Long.compare(f2.lastModified(), f1.lastModified()))
